@@ -6,6 +6,12 @@ import { prisma } from "@/lib/prisma";
 import { MergeAccountSchema } from "@/lib/validation";
 import { rateLimit } from "@/lib/rateLimit";
 
+// Force this route to run at request time only. Without this, Next's static
+// analyzer tries to import authOptions → PrismaAdapter → prisma at build
+// time and fails when DATABASE_URL isn't reachable from the build sandbox.
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {

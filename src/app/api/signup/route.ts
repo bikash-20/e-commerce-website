@@ -4,6 +4,12 @@ import { hashPassword } from "@/lib/password";
 import { SignupSchema } from "@/lib/validation";
 import { rateLimit } from "@/lib/rateLimit";
 
+// Force this route to run at request time only. Without this, Next's static
+// analyzer tries to import the route module and its transitive Prisma client
+// at build time and fails when DATABASE_URL isn't reachable from the build sandbox.
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
   // Per-IP+email limiter. Crude; replace with Redis as noted.
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? "anon";

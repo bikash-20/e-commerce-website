@@ -1,10 +1,20 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
+  // useSearchParams() must be inside a Suspense boundary in Next 14, otherwise
+  // the static-prerender step fails the build.
+  return (
+    <Suspense fallback={<main style={{ maxWidth: 360, margin: "4rem auto" }}>Loading…</main>}>
+      <LoginInner />
+    </Suspense>
+  );
+}
+
+function LoginInner() {
   const sp = useSearchParams();
   const error = sp.get("error");
   const email = sp.get("email") ?? "";
