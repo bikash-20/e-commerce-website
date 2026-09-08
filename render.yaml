@@ -1,0 +1,15 @@
+services:
+  - type: cron
+    name: prisma-migrate
+    runtime: node
+    plan: starter
+    schedule: "0 2 * * *"
+    buildCommand: npm install
+    startCommand: npx prisma migrate deploy
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: NODE_ENV
+        value: production
